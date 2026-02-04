@@ -124,6 +124,24 @@ claude-code/
 
 > ⚠️ Replit, Railway는 Always On이 유료입니다.
 
+### ☁️ 클라우드 배포 (GCP / AWS)
+
+**[CLOUD_DEPLOYMENT.md](CLOUD_DEPLOYMENT.md)** - GCP & AWS 직접 배포 가이드
+
+#### GCP Cloud Run (가장 쉬움!)
+```bash
+./deploy-gcp.sh
+```
+- 무료 티어: 200만 요청/월
+- 자동 스케일링, HTTPS 기본 제공
+
+#### AWS Elastic Beanstalk
+```bash
+./deploy-aws.sh
+```
+- 무료 티어: 750시간/월 (1년)
+- 자동 스케일링, 로드 밸런싱
+
 ### 🌐 가장 빠른 방법 (1분 완료!)
 
 ```bash
