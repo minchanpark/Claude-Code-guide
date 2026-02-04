@@ -87,6 +87,30 @@ claude-code/
     └── index.html       # 웹 인터페이스
 ```
 
+## 🚀 배포하기
+
+이 애플리케이션을 배포하여 노션에 삽입하고 싶으신가요?
+
+자세한 가이드는 다음 문서를 참고하세요:
+- **[DEPLOYMENT.md](DEPLOYMENT.md)** - 배포 플랫폼별 상세 가이드
+- **[NOTION_GUIDE.md](NOTION_GUIDE.md)** - 노션 Embed 가이드
+
+### 빠른 시작
+
+```bash
+# GitHub에 코드 올리기
+./deploy-to-github.sh
+
+# 또는 수동으로:
+git init
+git add .
+git commit -m "Initial commit"
+git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
+git push -u origin main
+```
+
+그 다음 [Railway](https://railway.app) 또는 [Render](https://render.com)에서 배포하세요!
+
 ## 라이선스
 
 MIT License
