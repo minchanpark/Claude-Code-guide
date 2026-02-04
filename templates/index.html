@@ -1,12 +1,109 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Skills Demo</title>
+    <title>Claude Skills Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .loader {
+            border-top-color: #3498db;
+            -webkit-animation: spinner 1.5s linear infinite;
+            animation: spinner 1.5s linear infinite;
+        }
+        @-webkit-keyframes spinner {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+        @keyframes spinner {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
-<body>
-    <h1>Welcome to the Skills Demo</h1>
-    <p>This is a simple Flask application.</p>
+<body class="bg-gray-100 min-h-screen p-8">
+    <div class="max-w-6xl mx-auto">
+        <header class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-gray-800">Claude Skills Comparison Demo</h1>
+            <p class="text-gray-600 mt-2">AI 모델에 특정 'Skill'을 주입했을 때와 아닐 때의 답변 차이를 비교해보세요.</p>
+        </header>
+
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <label for="prompt" class="block text-sm font-medium text-gray-700 mb-2">질문을 입력하세요 (예: PDF에서 표를 추출하고 싶어)</label>
+            <div class="flex gap-4">
+                <input type="text" id="prompt" class="flex-1 border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="PDF 관련 질문을 입력해보세요...">
+                <button onclick="compare()" id="submit-btn" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition">비교하기</button>
+            </div>
+        </div>
+
+        <div id="loading" class="hidden flex justify-center items-center mb-8">
+            <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mr-3"></div>
+            <span class="text-gray-700">답변을 생성하는 중입니다...</span>
+        </div>
+
+        <div id="results" class="grid md:grid-cols-2 gap-8 hidden">
+            <!-- Without Skills -->
+            <div class="bg-white rounded-lg shadow-md flex flex-col">
+                <div class="bg-gray-200 px-4 py-2 rounded-t-lg font-bold flex justify-between">
+                    <span>Skills 미적용 (일반 Claude)</span>
+                    <span id="tokens-without" class="text-xs font-normal text-gray-600 self-center"></span>
+                </div>
+                <div id="without-content" class="p-6 text-gray-800 prose max-w-none whitespace-pre-wrap flex-1"></div>
+            </div>
+
+            <!-- With Skills -->
+            <div class="bg-white rounded-lg shadow-md flex flex-col border-2 border-blue-200">
+                <div class="bg-blue-100 px-4 py-2 rounded-t-lg font-bold flex justify-between text-blue-800 border-b border-blue-200">
+                    <span>Skills 적용 (PDF 전문가)</span>
+                    <span id="tokens-with" class="text-xs font-normal text-blue-600 self-center"></span>
+                </div>
+                <div id="with-content" class="p-6 text-gray-800 prose max-w-none whitespace-pre-wrap flex-1"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function compare() {
+            const promptInput = document.getElementById('prompt');
+            const prompt = promptInput.value.trim();
+            if (!prompt) return;
+
+            const submitBtn = document.getElementById('submit-btn');
+            const loading = document.getElementById('loading');
+            const results = document.getElementById('results');
+            
+            submitBtn.disabled = true;
+            loading.classList.remove('hidden');
+            results.classList.add('hidden');
+
+            try {
+                const response = await fetch('/compare', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                    return;
+                }
+
+                document.getElementById('without-content').innerText = data.without_skills;
+                document.getElementById('with-content').innerText = data.with_skills;
+                document.getElementById('tokens-without').innerText = `Tokens: ${data.tokens_without}`;
+                document.getElementById('tokens-with').innerText = `Tokens: ${data.tokens_with}`;
+
+                results.classList.remove('hidden');
+            } catch (err) {
+                alert('서버 요청 중 오류가 발생했습니다.');
+                console.error(err);
+            } finally {
+                submitBtn.disabled = false;
+                loading.classList.add('hidden');
+            }
+        }
+    </div>
 </body>
 </html>

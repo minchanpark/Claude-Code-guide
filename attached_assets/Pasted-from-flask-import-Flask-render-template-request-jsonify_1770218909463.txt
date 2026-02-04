@@ -74,7 +74,7 @@ def compare():
         
         # 1. Skills 없이 요청
         response_without = client.messages.create(
-            model="claude-3-5-sonnet-20241022",
+            model="claude-sonnet-4-20250514",
             max_tokens=1000,
             messages=[{
                 "role": "user",
@@ -84,7 +84,7 @@ def compare():
         
         # 2. Skills 포함 요청
         response_with = client.messages.create(
-            model="claude-3-5-sonnet-20241022",
+            model="claude-sonnet-4-20250514",
             max_tokens=1000,
             system=SKILL_CONTENT,
             messages=[{
