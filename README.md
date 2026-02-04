@@ -2,6 +2,21 @@
 
 Claude API의 Skills 기능을 시각적으로 비교할 수 있는 웹 애플리케이션입니다.
 
+## ⚡ 빠른 시작 (1분!)
+
+### 초간단 배포 - 3단계만!
+
+```bash
+# 1. API 키 설정 (.env 파일에)
+# 2. 실행
+./run-public.sh
+# 3. 생성된 URL을 노션에 붙여넣기!
+```
+
+**자세한 가이드**: [SIMPLE_GUIDE.md](SIMPLE_GUIDE.md) ⭐ 초보자 추천!
+
+---
+
 ## 기능
 
 - 동일한 프롬프트에 대해 Skills 적용 전후의 응답을 비교
@@ -91,14 +106,42 @@ claude-code/
 
 이 애플리케이션을 배포하여 노션에 삽입하고 싶으신가요?
 
-자세한 가이드는 다음 문서를 참고하세요:
-- **[DEPLOYMENT.md](DEPLOYMENT.md)** - 배포 플랫폼별 상세 가이드
-- **[NOTION_GUIDE.md](NOTION_GUIDE.md)** - 노션 Embed 가이드
+### ⚡ 가장 쉬운 방법 (1분 완료!)
 
-### 빠른 시작
+**[SIMPLE_GUIDE.md](SIMPLE_GUIDE.md)** ⭐ 초보자용 - 딱 3단계만!
 
 ```bash
-# GitHub에 코드 올리기
+./run-public.sh
+```
+
+### 💰 완전 무료 배포 (결제 없음!)
+
+**[FREE_DEPLOYMENT.md](FREE_DEPLOYMENT.md)** - 100% 무료 배포 옵션 (2026년 검증)
+- **PythonAnywhere** - 무료, 안정적, sleep 없음 ⭐ 최고 추천!
+- **Render** - 무료, sleep 모드 있음
+- **Cloudflare Tunnel** - 로컬 서버를 인터넷에 공개 (1분 완료)
+- **Glitch** - 무료, 웹 에디터 제공
+
+> ⚠️ Replit, Railway는 Always On이 유료입니다.
+
+### 🌐 가장 빠른 방법 (1분 완료!)
+
+```bash
+# 로컬 서버를 인터넷에 공개 (Cloudflare Tunnel)
+./run-public.sh
+```
+
+생성된 URL을 노션에 embed 하세요!
+
+### 📚 상세 가이드
+
+- **[DEPLOYMENT.md](DEPLOYMENT.md)** - 모든 배포 플랫폼 가이드
+- **[NOTION_GUIDE.md](NOTION_GUIDE.md)** - 노션 Embed 가이드
+
+### GitHub에 코드 올리기
+
+```bash
+# GitHub에 코드 올리기 (PythonAnywhere/Render용)
 ./deploy-to-github.sh
 
 # 또는 수동으로:
@@ -108,8 +151,6 @@ git commit -m "Initial commit"
 git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
 git push -u origin main
 ```
-
-그 다음 [Railway](https://railway.app) 또는 [Render](https://render.com)에서 배포하세요!
 
 ## 라이선스
 

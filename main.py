@@ -76,7 +76,7 @@ def compare():
         if not api_key:
             return jsonify({
                 'error':
-                'API 키가 설정되지 않았습니다. Replit Secrets에 ANTHROPIC_API_KEY를 추가하세요.'
+                'API 키가 설정되지 않았습니다. .env 파일에 ANTHROPIC_API_KEY를 추가하세요.'
             }), 400
 
         client = Anthropic(api_key=api_key)
