@@ -1,6 +1,10 @@
 from flask import Flask, render_template, request, jsonify
 from anthropic import Anthropic
 import os
+from dotenv import load_dotenv
+
+# .env 파일 로드
+load_dotenv()
 
 app = Flask(__name__)
 
@@ -55,53 +59,65 @@ merger.write('merged.pdf')
 - 암호화된 PDF는 먼저 암호 해제
 - 대용량 파일은 페이지 단위로 처리"""
 
+
 @app.route('/')
 def index():
     return render_template('index.html')
+
 
 @app.route('/compare', methods=['POST'])
 def compare():
     try:
         data = request.json
         prompt = data.get('prompt')
-        
+
         # API 키 확인
         api_key = os.environ.get('ANTHROPIC_API_KEY')
         if not api_key:
-            return jsonify({'error': 'API 키가 설정되지 않았습니다. Replit Secrets에 ANTHROPIC_API_KEY를 추가하세요.'}), 400
-        
+            return jsonify({
+                'error':
+                'API 키가 설정되지 않았습니다. Replit Secrets에 ANTHROPIC_API_KEY를 추가하세요.'
+            }), 400
+
         client = Anthropic(api_key=api_key)
-        
+
         # 1. Skills 없이 요청
         response_without = client.messages.create(
-            model="claude-3-5-sonnet-20241022",
+            model="claude-sonnet-4-20250514",
             max_tokens=1000,
             messages=[{
                 "role": "user",
                 "content": prompt
-            }]
-        )
-        
+            }])
+
         # 2. Skills 포함 요청
         response_with = client.messages.create(
-            model="claude-3-5-sonnet-20241022",
+            model="claude-sonnet-4-20250514",
             max_tokens=1000,
             system=SKILL_CONTENT,
             messages=[{
                 "role": "user",
                 "content": prompt
-            }]
-        )
-        
+            }])
+
         return jsonify({
-            'without_skills': response_without.content[0].text,
-            'with_skills': response_with.content[0].text,
-            'tokens_without': response_without.usage.input_tokens + response_without.usage.output_tokens,
-            'tokens_with': response_with.usage.input_tokens + response_with.usage.output_tokens
+            'without_skills':
+            response_without.content[0].text,
+            'with_skills':
+            response_with.content[0].text,
+            'tokens_without':
+            response_without.usage.input_tokens +
+            response_without.usage.output_tokens,
+            'tokens_with':
+            response_with.usage.input_tokens +
+            response_with.usage.output_tokens
         })
-        
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # Railway와 다른 배포 환경을 위해 PORT 환경변수 지원
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)

@@ -1,6 +1,6 @@
 flask
-flask
 anthropic
 pandas
 pdfplumber
 PyPDF2
+python-dotenv

@@ -3,107 +3,352 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Claude Skills Demo</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Skills 효과 비교 데모</title>
     <style>
-        .loader {
-            border-top-color: #3498db;
-            -webkit-animation: spinner 1.5s linear infinite;
-            animation: spinner 1.5s linear infinite;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        @-webkit-keyframes spinner {
-            0% { -webkit-transform: rotate(0deg); }
-            100% { -webkit-transform: rotate(360deg); }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
         }
-        @keyframes spinner {
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .input-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        .input-section h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .examples {
+            margin-top: 15px;
+        }
+        
+        .examples p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .example-btn {
+            display: inline-block;
+            padding: 8px 15px;
+            margin: 5px 5px 5px 0;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .example-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .compare-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+        
+        .compare-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .compare-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .results {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .result-box {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        .result-box.without {
+            border-top: 4px solid #ff6b6b;
+        }
+        
+        .result-box.with {
+            border-top: 4px solid #51cf66;
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .result-header h3 {
+            font-size: 1.3rem;
+            color: #333;
+        }
+        
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .badge.without {
+            background: #ffe0e0;
+            color: #ff6b6b;
+        }
+        
+        .badge.with {
+            background: #d3f9d8;
+            color: #51cf66;
+        }
+        
+        .result-content {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 200px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .token-info {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
+        .error {
+            background: #ffe0e0;
+            color: #c92a2a;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 968px) {
+            .results {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen p-8">
-    <div class="max-w-6xl mx-auto">
-        <header class="mb-8 text-center">
-            <h1 class="text-3xl font-bold text-gray-800">Claude Skills Comparison Demo</h1>
-            <p class="text-gray-600 mt-2">AI 모델에 특정 'Skill'을 주입했을 때와 아닐 때의 답변 차이를 비교해보세요.</p>
-        </header>
-
-        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-            <label for="prompt" class="block text-sm font-medium text-gray-700 mb-2">질문을 입력하세요 (예: PDF에서 표를 추출하고 싶어)</label>
-            <div class="flex gap-4">
-                <input type="text" id="prompt" class="flex-1 border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="PDF 관련 질문을 입력해보세요...">
-                <button onclick="compare()" id="submit-btn" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition">비교하기</button>
-            </div>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚡ Skills 효과 비교 데모</h1>
+            <p>동일한 프롬프트로 Skills 적용 전후를 비교해보세요</p>
         </div>
-
-        <div id="loading" class="hidden flex justify-center items-center mb-8">
-            <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mr-3"></div>
-            <span class="text-gray-700">답변을 생성하는 중입니다...</span>
-        </div>
-
-        <div id="results" class="grid md:grid-cols-2 gap-8 hidden">
-            <!-- Without Skills -->
-            <div class="bg-white rounded-lg shadow-md flex flex-col">
-                <div class="bg-gray-200 px-4 py-2 rounded-t-lg font-bold flex justify-between">
-                    <span>Skills 미적용 (일반 Claude)</span>
-                    <span id="tokens-without" class="text-xs font-normal text-gray-600 self-center"></span>
-                </div>
-                <div id="without-content" class="p-6 text-gray-800 prose max-w-none whitespace-pre-wrap flex-1"></div>
-            </div>
-
-            <!-- With Skills -->
-            <div class="bg-white rounded-lg shadow-md flex flex-col border-2 border-blue-200">
-                <div class="bg-blue-100 px-4 py-2 rounded-t-lg font-bold flex justify-between text-blue-800 border-b border-blue-200">
-                    <span>Skills 적용 (PDF 전문가)</span>
-                    <span id="tokens-with" class="text-xs font-normal text-blue-600 self-center"></span>
-                </div>
-                <div id="with-content" class="p-6 text-gray-800 prose max-w-none whitespace-pre-wrap flex-1"></div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        async function compare() {
-            const promptInput = document.getElementById('prompt');
-            const prompt = promptInput.value.trim();
-            if (!prompt) return;
-
-            const submitBtn = document.getElementById('submit-btn');
-            const loading = document.getElementById('loading');
-            const results = document.getElementById('results');
+        
+        <div class="input-section">
+            <h2>프롬프트 입력</h2>
+            <textarea id="promptInput" placeholder="여기에 프롬프트를 입력하세요..."></textarea>
             
-            submitBtn.disabled = true;
-            loading.classList.remove('hidden');
-            results.classList.add('hidden');
-
+            <div class="examples">
+                <p><strong>예제 프롬프트:</strong></p>
+                <button class="example-btn" onclick="setExample('PDF 파일에서 표를 추출하는 방법을 알려줘')">PDF 표 추출</button>
+                <button class="example-btn" onclick="setExample('여러 PDF 파일을 하나로 합치고 싶어')">PDF 병합</button>
+                <button class="example-btn" onclick="setExample('PDF 폼에 자동으로 데이터를 채우는 코드 작성해줘')">PDF 폼 작성</button>
+                <button class="example-btn" onclick="setExample('스캔된 PDF에서 텍스트를 추출하려면?')">스캔 PDF 처리</button>
+            </div>
+            
+            <button class="compare-btn" id="compareBtn" onclick="compareResponses()">
+                🔍 비교하기
+            </button>
+        </div>
+        
+        <div id="resultsContainer"></div>
+    </div>
+    
+    <script>
+        function setExample(text) {
+            document.getElementById('promptInput').value = text;
+        }
+        
+        async function compareResponses() {
+            const prompt = document.getElementById('promptInput').value.trim();
+            
+            if (!prompt) {
+                alert('프롬프트를 입력해주세요!');
+                return;
+            }
+            
+            const btn = document.getElementById('compareBtn');
+            const resultsContainer = document.getElementById('resultsContainer');
+            
+            // 로딩 상태
+            btn.disabled = true;
+            btn.textContent = '⏳ 비교 중...';
+            resultsContainer.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Claude가 응답을 생성하고 있습니다...</p>
+                </div>
+            `;
+            
             try {
                 const response = await fetch('/compare', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
                     body: JSON.stringify({ prompt })
                 });
-
+                
                 const data = await response.json();
-
-                if (data.error) {
-                    alert('Error: ' + data.error);
-                    return;
+                
+                if (!response.ok) {
+                    throw new Error(data.error || '오류가 발생했습니다');
                 }
-
-                document.getElementById('without-content').innerText = data.without_skills;
-                document.getElementById('with-content').innerText = data.with_skills;
-                document.getElementById('tokens-without').innerText = `Tokens: ${data.tokens_without}`;
-                document.getElementById('tokens-with').innerText = `Tokens: ${data.tokens_with}`;
-
-                results.classList.remove('hidden');
-            } catch (err) {
-                alert('서버 요청 중 오류가 발생했습니다.');
-                console.error(err);
+                
+                // 결과 표시
+                resultsContainer.innerHTML = `
+                    <div class="results">
+                        <div class="result-box without">
+                            <div class="result-header">
+                                <h3>❌ Skills 없이</h3>
+                                <span class="badge without">일반 응답</span>
+                            </div>
+                            <div class="result-content">${escapeHtml(data.without_skills)}</div>
+                            <div class="token-info">
+                                📊 토큰 사용량: ${data.tokens_without.toLocaleString()}
+                            </div>
+                        </div>
+                        
+                        <div class="result-box with">
+                            <div class="result-header">
+                                <h3>✅ Skills 적용</h3>
+                                <span class="badge with">전문가 응답</span>
+                            </div>
+                            <div class="result-content">${escapeHtml(data.with_skills)}</div>
+                            <div class="token-info">
+                                📊 토큰 사용량: ${data.tokens_with.toLocaleString()}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+            } catch (error) {
+                resultsContainer.innerHTML = `
+                    <div class="error">
+                        ❌ 오류: ${error.message}
+                    </div>
+                `;
             } finally {
-                submitBtn.disabled = false;
-                loading.classList.add('hidden');
+                btn.disabled = false;
+                btn.textContent = '🔍 비교하기';
             }
         }
-    </div>
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Enter 키로 전송 (Shift+Enter는 줄바꿈)
+        document.getElementById('promptInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                compareResponses();
+            }
+        });
+    </script>
 </body>
 </html>
